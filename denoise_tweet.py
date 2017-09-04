@@ -11,6 +11,9 @@ tweets = pandas.read_csv(args[1],encoding="utf-8")
 # in_reply_to_status_idとin_reply_to_user_idの値が入っているツイートを除外
 tweets = tweets[tweets["in_reply_to_status_id"].isnull() | tweets["in_reply_to_user_id"].isnull()]
 
+# RTされたツイート「RT @」で始まるツイートを除外
+tweets = tweets[~tweets['text'].str.contains('RT.@*')]
+
 print(tweets)
 
 # csv export
