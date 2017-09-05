@@ -22,20 +22,34 @@ def load_csv(path,mode = 0):
     return pandas.read_csv(path,encoding="utf-8")
 
 def vectrize(tweets):
-    for i in tweets[1]:
-        print(i)
-    return tweets
+    char = []
+    char_indices = {}
+    indices_char = {}
+
+    # char生成処理
+    for i in tweets["text"]:
+        for j in i:
+            if j not in char:
+                char.append(j)
+    char.sort()
+
+    # char_indices生成処理
+
+    # indices_char生成処理
+
+    return char, char_indices, indices_char
 
 
 if __name__ == "__main__":
     dir = ""
-
     # load_csv <0:RTtweet,0:normaltweet,0<:reply
     #rts = load_csv(dir, -1)
     tweets = load_csv(dir, 0)
     replies = load_csv(dir, 1)
     
-    vector_tweets = vectrize(tweets)
+    char, char_indices, indices_char = vectrize(tweets)
 
     # csv output
-    print(vector_tweets)
+    print(char)
+    print(char_indices)
+    print(indices_char)
