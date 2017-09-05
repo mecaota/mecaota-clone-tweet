@@ -35,7 +35,7 @@ def _denoise(tweets):
     for i in inc:
         filtered = pandas.concat([filtered,tweets[tweets['source'].str.contains(i)]])
     # データセットとして使うデータ列を選択
-    tweets = filtered[['text','timestamp']]
+    tweets = filtered[['tweet_id','text']]
     
     return tweets
 
