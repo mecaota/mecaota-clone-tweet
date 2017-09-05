@@ -9,7 +9,8 @@ STR_MAX = 20
 def load_csv(path,mode = 0):
     # normal Tweet用csv読み込み処理
     if mode == 0:
-        path = path + "tweets_shaped.csv"
+        #path = path + "tweets_shaped.csv"
+        path = path + "tweets_minimum.csv"
 
     # reply Tweet用csv読み込み処理
     elif mode > 0:
@@ -68,7 +69,7 @@ def labering(tweets):
     for i,j in enumerate(sentences):
         for k,l in enumerate(j):
             X[i][k][char_indices[l]] = True
-            Y[i][char_indices[next_chars[k]]] = True
+        Y[i][char_indices[next_chars[i]]] = True
 
     return X, Y
             
@@ -80,5 +81,5 @@ if __name__ == "__main__":
     tweets = load_csv(dir, 0)
     replies = load_csv(dir, 1)
     X, Y = labering(tweets)
-    print(X)
-    # csv output
+    print(Y[0])
+
