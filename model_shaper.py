@@ -4,7 +4,7 @@ import re
 import numpy
 import sys
 
-#define STR_MAX = 20
+STR_MAX = 20
 
 def load_csv(path,mode = 0):
     # normal Tweet用csv読み込み処理
@@ -41,6 +41,22 @@ def vectrize(tweets):
 
     return char, char_indices, indices_char
 
+    # 文章結合後STR_MAX語ごとに文字列分割処理
+def str_split(tweets):
+    alltwi = ""
+    sentence = []
+    next_chars = []
+    for i in tweets["text"]:
+        alltwi += i
+    
+    for i in range(0, len(alltwi), 3):
+        try:
+            sentence.append(alltwi[i: i + STR_MAX])
+            next_chars.append(alltwi[i + STR_MAX + 1])
+        except IndexError:
+            break
+
+    return sentence, next_chars
 
 if __name__ == "__main__":
     dir = ""
@@ -48,10 +64,11 @@ if __name__ == "__main__":
     #rts = load_csv(dir, -1)
     tweets = load_csv(dir, 0)
     replies = load_csv(dir, 1)
-    
     char, char_indices, indices_char = vectrize(tweets)
+    sentence, next_chars = str_split(tweets)
 
     # csv output
     print(char)
     print(char_indices)
     print(indices_char)
+    print(sentence)
