@@ -5,19 +5,24 @@ import sys
 
 
 def tweet_filter(tweets, mode = 0):
-    if(mode == 0):
+    if mode == 0:
         # in_reply_to_status_idとin_reply_to_user_idの値が入っているツイートを除外
         tweets = tweets[tweets["in_reply_to_status_id"].isnull() | tweets["in_reply_to_user_id"].isnull()]
+        # RTされたツイート「RT @」で始まるツイートを除外
+        tweets = tweets[~tweets['text'].str.contains('RT.@*')]
         return _denoise(tweets)
-    else:
+    elif mode > 0:
         # in_reply_to_status_idとin_reply_to_user_idの値が入っているツイートを除外
         tweets = tweets[tweets["in_reply_to_status_id"].notnull() | tweets["in_reply_to_user_id"].notnull()]
+        # RTされたツイート「RT @」で始まるツイートを除外
+        tweets = tweets[~tweets['text'].str.contains('RT.@*')]
+        return _denoise(tweets)
+    elif mode < 0:
+        # RTされたツイート「RT @」で始まるツイートを除外
+        tweets = tweets[tweets['text'].str.contains('RT.@*')]
         return _denoise(tweets)
 
 def _denoise(tweets):
-    # RTされたツイート「RT @」で始まるツイートを除外
-    tweets = tweets[~tweets['text'].str.contains('RT.@*')]
-
     # ツイート元クライアントを指定
     exc = ['Foursquare','TwitCasting','Periscope','niconico','ツイ廃','Twitter.Web']
     inc = ['Android','TheWorld','Twitter','niconico','SobaCha','TweetDeck','Tweetbot','tw','ツイタマ','pictureadd','erased1023935','ATOK.Pad','SekaiCameraZoom','Hel1','Janetter','MateCha','ニコニコニュース']
@@ -42,9 +47,12 @@ if __name__ == "__main__":
     print(args[1])
     tweets_csv = pandas.read_csv(args[1],encoding="utf-8")
 
+    # tweet_filter <0:RTtweet,0:normaltweet,0<:reply
+    rts = tweet_filter(tweets_csv, -1)
     tweets = tweet_filter(tweets_csv, 0)
     replies = tweet_filter(tweets_csv, 1)
 
     # csv export
+    rts.to_csv("rts_shaped.csv")
     tweets.to_csv("tweets_shaped.csv")
     replies.to_csv("replies_shaped.csv")
