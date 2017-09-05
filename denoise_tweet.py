@@ -1,25 +1,32 @@
 # -*- coding: utf-8 -*-
 import pandas
+import re
 import numpy
 import sys
 
 
 def tweet_filter(tweets, mode = 0):
+    # normal Tweet用フィルタ処理
     if mode == 0:
         # in_reply_to_status_idとin_reply_to_user_idの値が入っているツイートを除外
         tweets = tweets[tweets["in_reply_to_status_id"].isnull() | tweets["in_reply_to_user_id"].isnull()]
         # RTされたツイート「RT @」で始まるツイートを除外
         tweets = tweets[~tweets['text'].str.contains('RT.@*')]
         return _denoise(tweets)
+
+    # reply Tweet用フィルタ処理
     elif mode > 0:
         # in_reply_to_status_idとin_reply_to_user_idの値が入っているツイートを除外
         tweets = tweets[tweets["in_reply_to_status_id"].notnull() | tweets["in_reply_to_user_id"].notnull()]
         # RTされたツイート「RT @」で始まるツイートを除外
         tweets = tweets[~tweets['text'].str.contains('RT.@*')]
         return _denoise(tweets)
+
+    # RT Tweet用フィルタ処理
     elif mode < 0:
-        # RTされたツイート「RT @」で始まるツイートを除外
+        # RTされたツイート「RT @」で始まるツイート以外を除外
         tweets = tweets[tweets['text'].str.contains('RT.@*')]
+        # tweets = tweets['text'].str.replace("^(RT)", "")
         return _denoise(tweets)
 
 def _denoise(tweets):
@@ -36,6 +43,9 @@ def _denoise(tweets):
         filtered = pandas.concat([filtered,tweets[tweets['source'].str.contains(i)]])
     # データセットとして使うデータ列を選択
     tweets = filtered[['tweet_id','text']]
+
+    # @hogeを削除
+    tweets = tweets["text"].str.replace("@\w*:?\s", "")
     
     return tweets
 
