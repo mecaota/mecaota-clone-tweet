@@ -19,8 +19,9 @@ def load_csv(path,mode = 0):
     # RT Tweet用csv読み込み処理
     elif mode < 0:
         path = path + "rts_shaped.csv"
+
     print("loading csv: " + path)
-    return pandas.read_csv(path,encoding="utf-8")
+    return pandas.read_csv(open(path,'rU'), encoding="utf-8")
 
 def vectrize(tweets):
     chars = [] # 全ツイート中に登場する文字列リスト
@@ -68,12 +69,12 @@ def labering(tweets):
         Y[i][char_indices[next_chars[i]]] = True
 
     return X, Y
-            
+
 
 if __name__ == "__main__":
     dir = ""
     # load_csv <0:RTtweet,0:normaltweet,0<:reply
-    #rts = load_csv(dir, -1)
+    rts = load_csv(dir, -1)
     tweets = load_csv(dir, 0)
     replies = load_csv(dir, 1)
     X, Y = labering(tweets)
