@@ -45,7 +45,7 @@ def _denoise(tweets):
     tweets = filtered[['tweet_id','text']]
 
     # @hogeを削除
-    tweets = tweets["text"].str.replace("@\w*:?\s", "")
+    tweets["text"].str.replace("@\w*:?\s", "")
     
     return tweets
 
@@ -63,6 +63,6 @@ if __name__ == "__main__":
     replies = tweet_filter(tweets_csv, 1)
 
     # csv export
-    rts.to_csv("rts_shaped.csv")
-    tweets.to_csv("tweets_shaped.csv")
-    replies.to_csv("replies_shaped.csv")
+    rts.to_csv("rts_shaped.csv", header=True)
+    tweets.to_csv("tweets_shaped.csv", header=True)
+    replies.to_csv("replies_shaped.csv", header=True)
