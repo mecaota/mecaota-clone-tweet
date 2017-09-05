@@ -33,9 +33,11 @@ def vectrize(tweets):
                 char.append(j)
     char.sort()
 
-    # char_indices生成処理
-
-    # indices_char生成処理
+    # char_indicesとindices_char生成処理
+    for i in char:
+        index = char.index(i)
+        char_indices[i] = index
+        indices_char[index] = i
 
     return char, char_indices, indices_char
 
