@@ -53,7 +53,7 @@ def str_split(tweets):
     for i in range(0, len(alltwi), 3):
         try:
             sentences.append(alltwi[i: i + STR_MAX])
-            next_chars.append(alltwi[i + STR_MAX + 1])
+            next_chars.append(alltwi[i + STR_MAX])
         except IndexError:
             break
 
@@ -69,6 +69,8 @@ def labering(tweets):
     for i,j in enumerate(sentences):
         for k,l in enumerate(j):
             X[i][k][char_indices[l]] = True
+        print(next_chars[i])
+        print(char_indices[next_chars[i]])
         Y[i][char_indices[next_chars[i]]] = True
 
     return X, Y
