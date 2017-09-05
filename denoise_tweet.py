@@ -26,7 +26,6 @@ def tweet_filter(tweets, mode = 0):
     elif mode < 0:
         # RTされたツイート「RT @」で始まるツイート以外を除外
         tweets = tweets[tweets['text'].str.contains('RT.@*')]
-        # tweets = tweets['text'].str.replace("^(RT)", "")
         return _denoise(tweets)
 
 def _denoise(tweets):
@@ -45,8 +44,8 @@ def _denoise(tweets):
     tweets = filtered[['tweet_id','text']]
 
     # @hogeを削除
-    tweets["text"].str.replace("@\w*:?\s", "")
-    
+    tweets = tweets["text"].str.replace("(RT\s)*@\w*(:\s)?", "")
+
     return tweets
 
 
