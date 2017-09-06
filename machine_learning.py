@@ -18,10 +18,8 @@ def create_model(X, Y):
     model.add(Dense(20))
     model.add(Activation("linear"))
     model.compile(loss = 'mean_squared_error', optimizer = 'adam')
-    print("test")
-    # model.fit(X, Y, epochs = epochs, batch_size = batch_size)
-    # score = model.evaluate(X, Y, show_accuracy=True, verbose=0)
-    print("score: " + str(score))
+    return model
+
 
 if __name__ == "__main__":
     dir = ""
