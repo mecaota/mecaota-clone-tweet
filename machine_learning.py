@@ -2,32 +2,32 @@
 import numpy as np
 
 from keras.layers import Dense, Activation
+from keras.layers.recurrent import LSTM
 from keras.models import Sequential
 
-import model_shaper as shape
+import model_shaper as m_shape
 
-def create_model(label):
+def create_model(X, Y):
     # Sequentialモデルの最初のレイヤーとして
+    epochs = 2
+    batch_size = X.shape[0] * X.shape[1] * X.shape[2]
+    print(X.shape)
     model = Sequential()
-    model.add(LSTM(32, input_shape=(10, 64)))
-    # ここで model.output_shape == (None, 32)
-    # 注: `None`はバッチ次元.
-
-    # 2層目以降のレイヤーに対しては,入力サイズを指定する必要はありません:
-    model.add(LSTM(16))
-
-    # to stack recurrent layers, you must use return_sequences=True
-    # on any recurrent layer that feeds into another recurrent layer.
-    # note that you only need to specify the input size on the first layer.
-    model = Sequential()
-    model.add(LSTM(64, input_dim=64, input_length=10, return_sequences=True))
+    model.add(LSTM(64, return_sequences=True, input_dim=X.shape[2], input_length=X.shape[1]))
     model.add(LSTM(32, return_sequences=True))
-    model.add(LSTM(10))
+    model.add(Dense(20))
+    model.add(Activation("linear"))
+    model.compile(loss = 'mean_squared_error', optimizer = 'adam')
+    print("test")
+    # model.fit(X, Y, epochs = epochs, batch_size = batch_size)
+    # score = model.evaluate(X, Y, show_accuracy=True, verbose=0)
+    print("score: " + str(score))
 
 if __name__ == "__main__":
     dir = ""
     # load_csv <0:RTtweet,0:normaltweet,0<:reply
-    rts = shape.load_csv(dir, -1)
-    tweets = shape.load_csv(dir, 0)
-    replies = shape.load_csv(dir, 1)
-    X, Y = shape.labering(tweets)
+    rts = m_shape.load_csv(dir, -1)
+    tweets = m_shape.load_csv(dir, 0)
+    replies = m_shape.load_csv(dir, 1)
+    X, Y = m_shape.labering(tweets)
+    create_model(X, Y)
