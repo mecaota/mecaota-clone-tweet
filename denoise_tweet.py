@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 import pandas
-import re
-import numpy
 import sys
-
 
 def tweet_filter(tweets, mode = 0):
     # normal Tweet用フィルタ処理

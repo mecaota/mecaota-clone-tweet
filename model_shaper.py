@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
 import pandas
-import re
 import numpy as np
-import sys
 
 STR_MAX = 20
 
-def load_csv(path,mode = 0):
+def load_csv(path="",mode = 0):
     # normal Tweet用csv読み込み処理
     if mode == 0:
         #path = path + "tweets_shaped.csv"
