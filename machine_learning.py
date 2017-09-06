@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import numpy as np
 import sys
+import random
 
 from keras.layers import Dense, Activation
 from keras.layers.recurrent import LSTM
@@ -10,13 +11,11 @@ import model_shaper as m_shape
 
 def create_model(X, Y):
     epochs = 2
-    batch_size = X.shape[0] * X.shape[1] * X.shape[2]
+    batch_size = X.shape[1]
+    output_dim = X.shape[2]
     model = Sequential()
-    model.add(LSTM(64, return_sequences=False, input_shape=(X.shape[1], X.shape[2])))
-    #model.add(LSTM(64, return_sequences=True, input_shape=(20, X.shape[2])))
-    model.add(LSTM(32, return_sequences=False))
-    model.add(Dense(20))
-    model.add(Activation("linear"))
+    model.add(LSTM(64, return_sequences=False, input_shape=(batch_size, output_dim)))
+    model.add(Dense(output_dim, activation="linear"))
     model.compile(loss = 'mean_squared_error', optimizer = 'adam')
     return model
 
@@ -31,12 +30,14 @@ def sampling(preds, temperature=1.0):
 
 def learning(model, X, Y):
     # train the model, output generated text after each iteration
+    maxlen = X.shape[1]
+    text = ""
+
     for iteration in range(1, 60):
         print()
         print('-' * 50)
         print('Iteration', iteration)
         model.fit(X, Y, batch_size=128, epochs=1)
-
         start_index = random.randint(0, len(text) - maxlen - 1)
 
         for diversity in [0.2, 0.5, 1.0, 1.2]:
