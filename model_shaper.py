@@ -7,8 +7,8 @@ STR_MAX = 20
 def load_csv(path="",mode = 0):
     # normal Tweet用csv読み込み処理
     if mode == 0:
-        #path = path + "tweets_shaped.csv"
-        path = path + "tweets_minimum.csv"
+        path = path + "tweets_shaped.csv"
+        #path = path + "tweets_minimum.csv"
 
     # reply Tweet用csv読み込み処理
     elif mode > 0:
@@ -28,7 +28,7 @@ def vectrize(tweets):
 
     # char生成処理
     for i in tweets["text"]:
-        for j in i:
+        for j in str(i):
             if j not in chars:
                 chars.append(j)
     chars.sort()
@@ -47,7 +47,7 @@ def str_split(tweets):
     sentences = []
     next_chars = []
     for i in tweets["text"]:
-        alltwi += i
+        alltwi += str(i)
     
     for i in range(0, len(alltwi) - STR_MAX, 3):
         sentences.append(alltwi[i: i + STR_MAX])
@@ -76,3 +76,5 @@ if __name__ == "__main__":
     tweets = load_csv(dir, 0)
     replies = load_csv(dir, 1)
     X, Y = labering(tweets)
+    X3, Y3 = labering(replies)
+    X2, Y2 = labering(rts)
