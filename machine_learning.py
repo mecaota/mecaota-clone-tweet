@@ -1,22 +1,21 @@
 # -*- coding: utf-8 -*-
 import numpy as np
 import sys
+import random
 
 from keras.layers import Dense, Activation
 from keras.layers.recurrent import LSTM
 from keras.models import Sequential
 
-import model_shaper as m_shape
+import TweetModel
 
 def create_model(X, Y):
     epochs = 2
-    batch_size = X.shape[0] * X.shape[1] * X.shape[2]
+    batch_size = X.shape[1]
+    output_dim = X.shape[2]
     model = Sequential()
-    model.add(LSTM(64, return_sequences=False, input_shape=(X.shape[1], X.shape[2])))
-    #model.add(LSTM(64, return_sequences=True, input_shape=(20, X.shape[2])))
-    model.add(LSTM(32, return_sequences=False))
-    model.add(Dense(20))
-    model.add(Activation("linear"))
+    model.add(LSTM(64, return_sequences=False, input_shape=(batch_size, output_dim)))
+    model.add(Dense(output_dim, activation="linear"))
     model.compile(loss = 'mean_squared_error', optimizer = 'adam')
     return model
 
@@ -29,14 +28,18 @@ def sampling(preds, temperature=1.0):
     probas = np.random.multinomial(1, preds, 1)
     return np.argmax(probas)
 
-def learning(model, X, Y):
+def learning(model):
     # train the model, output generated text after each iteration
+    X = model.X
+    Y = model.Y
+    maxlen = X.shape[1]
+    text = ""
+
     for iteration in range(1, 60):
         print()
         print('-' * 50)
         print('Iteration', iteration)
         model.fit(X, Y, batch_size=128, epochs=1)
-
         start_index = random.randint(0, len(text) - maxlen - 1)
 
         for diversity in [0.2, 0.5, 1.0, 1.2]:
@@ -68,9 +71,12 @@ def learning(model, X, Y):
 if __name__ == "__main__":
     dir = ""
     # load_csv <0:RTtweet,0:normaltweet,0<:reply
-    rts = m_shape.load_csv(dir, -1)
-    tweets = m_shape.load_csv(dir, 0)
-    replies = m_shape.load_csv(dir, 1)
-    X, Y = m_shape.labering(tweets)
-    model = create_model(X, Y)
-    result = learning(model, X, Y)
+    tweets_model = TweetModel.TweetModel("tweets_mini.csv")
+    replies_model = TweetModel.TweetModel("replies_mini.csv")
+    rts_model = TweetModel.TweetModel("rts_mini.csv")
+    #tweets_model = TweetModel("tweets_shaped.csv")
+    #replies_model = TweetModel("replies_shaped.csv")
+    #rts_model = TweetModel("rts_shaped.csv")
+
+    model = create_model(tweets_model.X, tweets_model.Y)
+    result = learning(tweets_model)
