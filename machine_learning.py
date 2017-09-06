@@ -20,7 +20,7 @@ def create_model(X, Y):
     model.compile(loss = 'mean_squared_error', optimizer = 'adam')
     return model
 
-def leraning(model):
+def learning(model):
     return
 
 if __name__ == "__main__":
@@ -31,3 +31,4 @@ if __name__ == "__main__":
     replies = m_shape.load_csv(dir, 1)
     X, Y = m_shape.labering(tweets)
     model = create_model(X, Y)
+    result = learning(model)
