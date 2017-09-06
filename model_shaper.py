@@ -7,16 +7,18 @@ STR_MAX = 20
 def load_csv(path="",mode = 0):
     # normal Tweet用csv読み込み処理
     if mode == 0:
-        path = path + "tweets_shaped.csv"
-        #path = path + "tweets_minimum.csv"
+        #path = path + "tweets_shaped.csv"
+        path = path + "tweets_mini.csv"
 
     # reply Tweet用csv読み込み処理
     elif mode > 0:
-        path = path + "replies_shaped.csv"
+        #path = path + "replies_shaped.csv"
+        path = path + "replies_mini.csv"
 
     # RT Tweet用csv読み込み処理
     elif mode < 0:
-        path = path + "rts_shaped.csv"
+        #path = path + "rts_shaped.csv"
+        path = path + "rts_mini.csv"
 
     print("loading csv: " + path)
     return pandas.read_csv(open(path,'rU'), encoding="utf-8")
