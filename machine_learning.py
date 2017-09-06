@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import numpy as np
+import sys
 
 from keras.layers import Dense, Activation
 from keras.layers.recurrent import LSTM
@@ -8,7 +9,6 @@ from keras.models import Sequential
 import model_shaper as m_shape
 
 def create_model(X, Y):
-    # Sequentialモデルの最初のレイヤーとして
     epochs = 2
     batch_size = X.shape[0] * X.shape[1] * X.shape[2]
     print(X.shape)
@@ -20,6 +20,8 @@ def create_model(X, Y):
     model.compile(loss = 'mean_squared_error', optimizer = 'adam')
     return model
 
+def leraning(model):
+    return
 
 if __name__ == "__main__":
     dir = ""
@@ -28,4 +30,4 @@ if __name__ == "__main__":
     tweets = m_shape.load_csv(dir, 0)
     replies = m_shape.load_csv(dir, 1)
     X, Y = m_shape.labering(tweets)
-    create_model(X, Y)
+    model = create_model(X, Y)
