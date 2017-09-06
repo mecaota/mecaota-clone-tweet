@@ -65,7 +65,9 @@ class TweetModel:
 
 if __name__ == "__main__":
     # load_csv <0:RTtweet,0:normaltweet,0<:reply
-    #tweets = TweetModel("tweets_minimum.csv")
-    tweets = TweetModel("tweets_shaped.csv")
-    replies = TweetModel("replies_shaped.csv")
-    rts = TweetModel("rts_shaped.csv")
+    tweets = TweetModel("tweets_mini.csv")
+    replies = TweetModel("replies_mini.csv")
+    rts = TweetModel("rts_mini.csv")
+    #tweets = TweetModel("tweets_shaped.csv")
+    #replies = TweetModel("replies_shaped.csv")
+    #rts = TweetModel("rts_shaped.csv")
