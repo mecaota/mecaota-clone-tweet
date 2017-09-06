@@ -2,12 +2,11 @@
 import pandas
 import numpy as np
 
-STR_MAX = 20
-
 class TweetModel:
     def __init__(self, path):
         self.tweets = pandas.read_csv(open(path,'rU'), encoding="utf-8")
-        self.strmax = 20
+        print("TweetModel instance create task start from " + str(path))
+        self.__strmax = 20
         self.sentences = []
         self.next_chars = []
         self.chars = []
@@ -15,34 +14,47 @@ class TweetModel:
         self.indices_chars = {}
         self.__str_split()
         self.__vectrize()
-        print("TweetModel instance created from " + str(path))
 
-        self.X = np.zeros((len(self.sentences), STR_MAX, len(self.chars)),dtype=np.bool)
+        self.X = np.zeros((len(self.sentences), self.__strmax, len(self.chars)),dtype=np.bool)
         self.Y = np.zeros((len(self.sentences),len(self.chars)),dtype=np.bool)
+        print("TweetModel labeling start " + str(path))
         self.__labering()
         
     # 文章結合後STR_MAX語ごとに文字列分割処理
     def __str_split(self):
         alltwi = ""
+        sentences = []
+        next_chars = []
         for i in self.tweets["text"]:
             alltwi += str(i)
         
-        for i in range(0, len(alltwi) - STR_MAX, 3):
-            self.sentences.append(alltwi[i: i + STR_MAX])
-            self.next_chars.append(alltwi[i + STR_MAX])
+        for i in range(0, len(alltwi) - self.__strmax, 3):
+            sentences.append(alltwi[i: i + self.__strmax])
+            next_chars.append(alltwi[i + self.__strmax])
 
+        self.sentences = sentences
+        self.next_chars = next_chars
+        
     def __vectrize(self):
-        # char生成処理
+        # char生成処理self.chars = []
+        chars = []
+        char_indices = {}
+        indices_chars = {}
+
         for i in self.tweets["text"]:
             for j in str(i):
-                if j not in self.chars:
-                    self.chars.append(str(j))
-        self.chars.sort()
+                if j not in chars:
+                    chars.append(str(j))
+        chars.sort()
 
         # char_indicesとindices_char生成処理
-        for index, i in enumerate(self.chars):
-            self.char_indices[i] = index
-            self.indices_chars[index] = str(i)
+        for index, i in enumerate(chars):
+            char_indices[i] = index
+            indices_chars[index] = str(i)
+
+        self.chars = chars
+        self.char_indices = char_indices
+        self.indices_chars = indices_chars
 
     # ラベリング
     def __labering(self):
@@ -53,7 +65,7 @@ class TweetModel:
 
 if __name__ == "__main__":
     # load_csv <0:RTtweet,0:normaltweet,0<:reply
-    rts = TweetModel("rts_shaped.csv")
     #tweets = TweetModel("tweets_minimum.csv")
     tweets = TweetModel("tweets_shaped.csv")
     replies = TweetModel("replies_shaped.csv")
+    rts = TweetModel("rts_shaped.csv")
