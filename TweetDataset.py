@@ -13,6 +13,7 @@ class TweetDataset:
         self.chars = []
         self.char_indices = {}
         self.indices_chars = {}
+        self.alltweet = ""
         self.__str_split()
         self.__vectrize()
 
@@ -28,6 +29,7 @@ class TweetDataset:
         next_chars = []
         for i in self.tweets["text"]:
             alltwi += str(i)
+        self.alltweet = alltwi
         
         for i in range(0, len(alltwi) - self.strmax, 3):
             sentences.append(alltwi[i: i + self.strmax])
