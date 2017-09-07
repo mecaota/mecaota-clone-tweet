@@ -7,7 +7,7 @@ from keras.layers import Dense, Activation
 from keras.layers.recurrent import LSTM
 from keras.models import Sequential
 
-import TweetModel
+import TweetDataset
 
 def create_model(X, Y):
     epochs = 2
@@ -28,12 +28,12 @@ def sampling(preds, temperature=1.0):
     probas = np.random.multinomial(1, preds, 1)
     return np.argmax(probas)
 
-def learning(model):
+def learning(model, dataset):
     # train the model, output generated text after each iteration
-    X = model.X
-    Y = model.Y
-    maxlen = X.shape[1]
-    text = ""
+    X = dataset.X
+    Y = dataset.Y
+    maxlen = dataset.strmax
+    text = dataset.sentences
 
     for iteration in range(1, 60):
         print()
@@ -71,12 +71,12 @@ def learning(model):
 if __name__ == "__main__":
     dir = ""
     # load_csv <0:RTtweet,0:normaltweet,0<:reply
-    tweets_model = TweetModel.TweetModel("tweets_mini.csv")
-    replies_model = TweetModel.TweetModel("replies_mini.csv")
-    rts_model = TweetModel.TweetModel("rts_mini.csv")
-    #tweets_model = TweetModel("tweets_shaped.csv")
-    #replies_model = TweetModel("replies_shaped.csv")
-    #rts_model = TweetModel("rts_shaped.csv")
+    tweets_dataset = TweetDataset.TweetDataset("tweets_mini.csv")
+    replies_dataset = TweetDataset.TweetDataset("replies_mini.csv")
+    rts_dataset = TweetDataset.TweetDataset("rts_mini.csv")
+    #tweets_model = TweetDataset("tweets_shaped.csv")
+    #replies_model = TweetDataset("replies_shaped.csv")
+    #rts_model = TweetDataset("rts_shaped.csv")
 
-    model = create_model(tweets_model.X, tweets_model.Y)
-    result = learning(tweets_model)
+    model = create_model(tweets_dataset.X, tweets_dataset.Y)
+    result = learning(model, tweets_dataset)
