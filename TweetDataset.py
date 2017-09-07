@@ -2,20 +2,22 @@
 import pandas
 import numpy as np
 
-class TweetModel:
+### TweetDataset ###
+class TweetDataset:
     def __init__(self, path):
         self.tweets = pandas.read_csv(open(path,'rU'), encoding="utf-8")
         print("TweetModel instance create task start from " + str(path))
-        self.__strmax = 20
+        self.strmax = 20
         self.sentences = []
         self.next_chars = []
         self.chars = []
         self.char_indices = {}
         self.indices_chars = {}
+        self.alltweet = ""
         self.__str_split()
         self.__vectrize()
 
-        self.X = np.zeros((len(self.sentences), self.__strmax, len(self.chars)),dtype=np.bool)
+        self.X = np.zeros((len(self.sentences), self.strmax, len(self.chars)),dtype=np.bool)
         self.Y = np.zeros((len(self.sentences),len(self.chars)),dtype=np.bool)
         print("TweetModel labeling start " + str(path))
         self.__labering()
@@ -27,10 +29,11 @@ class TweetModel:
         next_chars = []
         for i in self.tweets["text"]:
             alltwi += str(i)
+        self.alltweet = alltwi
         
-        for i in range(0, len(alltwi) - self.__strmax, 3):
-            sentences.append(alltwi[i: i + self.__strmax])
-            next_chars.append(alltwi[i + self.__strmax])
+        for i in range(0, len(alltwi) - self.strmax, 3):
+            sentences.append(alltwi[i: i + self.strmax])
+            next_chars.append(alltwi[i + self.strmax])
 
         self.sentences = sentences
         self.next_chars = next_chars
@@ -65,9 +68,9 @@ class TweetModel:
 
 if __name__ == "__main__":
     # load_csv <0:RTtweet,0:normaltweet,0<:reply
-    tweets = TweetModel("tweets_mini.csv")
-    replies = TweetModel("replies_mini.csv")
-    rts = TweetModel("rts_mini.csv")
-    #tweets = TweetModel("tweets_shaped.csv")
-    #replies = TweetModel("replies_shaped.csv")
-    #rts = TweetModel("rts_shaped.csv")
+    tweets = TweetDataset("tweets_mini.csv")
+    replies = TweetDataset("replies_mini.csv")
+    rts = TweetDataset("rts_mini.csv")
+    #tweets = TweetDataset("tweets_shaped.csv")
+    #replies = TweetDataset("replies_shaped.csv")
+    #rts = TweetDataset("rts_shaped.csv")
