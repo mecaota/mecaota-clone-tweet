@@ -16,7 +16,7 @@ def create_model(X, Y):
     model = Sequential()
     model.add(LSTM(64, return_sequences=False, input_shape=(batch_size, output_dim)))
     model.add(Dense(output_dim, activation='relu'))
-    model.compile(loss = 'mean_squared_error', optimizer = 'adam')
+    model.compile(loss = 'mean_squared_error', optimizer = 'rmsprop')
     return model
 
 def sampling(preds, temperature=1.0):
@@ -77,10 +77,10 @@ def learning(model, dataset):
 if __name__ == "__main__":
     dir = ""
     # load_csv <0:RTtweet,0:normaltweet,0<:reply
-    tweets_dataset = TweetDataset.TweetDataset("tweets_mini.csv")
-    replies_dataset = TweetDataset.TweetDataset("replies_mini.csv")
-    rts_dataset = TweetDataset.TweetDataset("rts_mini.csv")
-    #tweets_dataset = TweetDataset.TweetDataset("tweets_shaped.csv")
+    #tweets_dataset = TweetDataset.TweetDataset("tweets_mini.csv")
+    #replies_dataset = TweetDataset.TweetDataset("replies_mini.csv")
+    #rts_dataset = TweetDataset.TweetDataset("rts_mini.csv")
+    tweets_dataset = TweetDataset.TweetDataset("tweets_shaped.csv")
     #replies_dataset = TweetDataset.TweetDataset("replies_shaped.csv")
     #rts_dataset = TweetDataset.TweetDataset("rts_shaped.csv")
 
