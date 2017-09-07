@@ -32,6 +32,8 @@ class TweetDataset:
         dataset["char_indices"] = self.char_indices
         dataset["indices_chars"] = self.indices_chars
         dataset["alltweet"] = self.alltweet
+        dataset["X"] = self.X
+        dataset["Y"] = self.Y
         return dataset
 
     # 文章結合後STR_MAX語ごとに文字列分割処理

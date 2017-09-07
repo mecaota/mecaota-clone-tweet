@@ -31,13 +31,13 @@ def sampling(preds, temperature=1.0):
 
 def learning(model, dataset):
     # train the model, output generated text after each iteration
-    X = dataset.X
-    Y = dataset.Y
-    maxlen = dataset.strmax
-    text = dataset.alltweet
-    chars = dataset.chars
-    char_indices = dataset.char_indices
-    indices_char = dataset.indices_chars
+    X = dataset["X"]
+    Y = dataset["Y"]
+    maxlen = dataset["strmax"]
+    text = dataset["alltweet"]
+    chars = dataset["chars"]
+    char_indices = dataset["char_indices"]
+    indices_char = dataset["indices_chars"]
 
     for iteration in range(1, 60):
         print()
@@ -79,13 +79,17 @@ def save_model(model, filename):
     
 def open_model(filename):
     model = None
-    # model読み込み処理
+    dataset_dict = {}
+    # modelとdataset読み込み処理
     try:
         with open("model/" + filename + "_model.json", "r") as f:
             model = model_from_json(f.read())
+        with open("model/" + filename + "_dataset.json", "r") as f:
+            dataset_dict = json.load(f)
     except FileNotFoundError:
         dataset = TweetDataset.TweetDataset(filename + "_shaped.csv")
         model = create_model(dataset.X, dataset.Y)
+        dataset_dict = dataset.to_dict()
 
     # model_weights読み込み処理
     try:
@@ -95,23 +99,13 @@ def open_model(filename):
         print("no weight data")
 
     model.summary()
-    return model
+    return model, dataset_dict
 
 
 
 if __name__ == "__main__":
-    tweets_model = open_model("mini_tweets")
-    #replies_model = open_model("mini_replies")
-    #rts_model = open_model("mini_rts")
+    tweets_model, tweets_dataset = open_model("mini_tweets")
+    #replies_model, replies_dataset= open_model("mini_replies")
+    #rts_model, rts_dataset= open_model("mini_rts")
 
-
-    # load_csv <0:RTtweet,0:normaltweet,0<:reply
-    tweets_dataset = TweetDataset.TweetDataset("mini_tweets_shaped.csv")
-    #replies_dataset = TweetDataset.TweetDataset("replies_mini.csv")
-    #rts_dataset = TweetDataset.TweetDataset("rts_mini.csv")
-    #tweets_dataset = TweetDataset.TweetDataset("tweets_shaped.csv")
-    #replies_dataset = TweetDataset.TweetDataset("replies_shaped.csv")
-    #rts_dataset = TweetDataset.TweetDataset("rts_shaped.csv")
-
-    #model = create_model(tweets_dataset.X, tweets_dataset.Y)
     result_model = learning(tweets_model, tweets_dataset)
