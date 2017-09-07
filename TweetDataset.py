@@ -21,7 +21,19 @@ class TweetDataset:
         self.Y = np.zeros((len(self.sentences),len(self.chars)),dtype=np.bool)
         print("TweetModel labeling start " + str(path))
         self.__labering()
-        
+    
+    # このオブジェクト内の再利用データをdict型で返す
+    def to_dict(self):
+        dataset = {}
+        dataset["strmax"] = self.strmax
+        dataset["sentence"] = self.sentences
+        dataset["next_chars"] = self.next_chars
+        dataset["chars"] = self.chars
+        dataset["char_indices"] = self.char_indices
+        dataset["indices_chars"] = self.indices_chars
+        dataset["alltweet"] = self.alltweet
+        return dataset
+
     # 文章結合後STR_MAX語ごとに文字列分割処理
     def __str_split(self):
         alltwi = ""
