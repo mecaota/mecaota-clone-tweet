@@ -34,22 +34,27 @@ def learning(model, dataset):
     Y = dataset.Y
     maxlen = dataset.strmax
     text = dataset.sentences
+    chars = dataset.chars
+    char_indices = dataset.char_indices
+    indices_char = dataset.indices_chars
 
-    for iteration in range(1, 60):
+    for iteration in range(1, 5): # デバッグのために一時的に変更中
         print()
         print('-' * 50)
         print('Iteration', iteration)
         model.fit(X, Y, batch_size=128, epochs=1)
-        start_index = random.randint(0, len(text) - maxlen - 1)
+        # start_index = random.randint(0, len(text) - maxlen - 1)
+        start_index = random.randint(0, len(text))
 
         for diversity in [0.2, 0.5, 1.0, 1.2]:
             print()
             print('----- diversity:', diversity)
 
             generated = ''
-            sentence = text[start_index: start_index + maxlen]
-            generated += sentence
-            print('----- Generating with seed: "' + sentence + '"')
+            # sentence = text[start_index: start_index + maxlen]
+            sentence = text[start_index]
+            generated += str(sentence)
+            print('----- Generating with seed: "' + str(sentence) + '"')
             sys.stdout.write(generated)
 
             for i in range(140):
