@@ -71,6 +71,3 @@ if __name__ == "__main__":
     tweets = TweetDataset("tweets_mini.csv")
     replies = TweetDataset("replies_mini.csv")
     rts = TweetDataset("rts_mini.csv")
-    #tweets = TweetDataset("tweets_shaped.csv")
-    #replies = TweetDataset("replies_shaped.csv")
-    #rts = TweetDataset("rts_shaped.csv")
