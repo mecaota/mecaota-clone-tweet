@@ -3,10 +3,12 @@ import numpy as np
 import sys
 import random
 import json
+import pandas
 
 from keras.layers import Dense, Activation
 from keras.layers.recurrent import LSTM
-from keras.models import Sequential, model_from_json
+from keras.models import Sequential, load_model
+from keras.callbacks import ModelCheckpoint
 
 import TweetDataset
 
@@ -38,12 +40,14 @@ def learning(model, dataset):
     chars = dataset["chars"]
     char_indices = dataset["char_indices"]
     indices_char = dataset["indices_chars"]
+    cb = None
 
-    for iteration in range(1, 60):
+
+    for iteration in range(1, 2):#now proseccisns
         print()
         print('-' * 50)
         print('Iteration', iteration)
-        history = model.fit(X, Y, batch_size=128, epochs=1)
+        history = model.fit(X, Y, batch_size=128, epochs=1, callbacks=cb)
         start_index = random.randint(0, len(text) - maxlen - 1)
 
         for diversity in [0.2, 0.5, 1.0, 1.2]:
@@ -71,41 +75,30 @@ def learning(model, dataset):
                 sys.stdout.write(next_char)
                 sys.stdout.flush()
             print()
+    return model
 
-def save_model(model, filename):
-    with open("model/" + filename + "_model.json", "w") as f:
-        f.write(model.to_json())
-    model.save_weights("model/" + filename + "_model_weights.hdf5")
+def save_model_dataset(model, dataset, filename):
+    model.save("model/" + filename + "_model.h5")
     
-def open_model(filename):
+def open_model_dataset(filename, systemcall):
     model = None
     dataset_dict = {}
     # modelとdataset読み込み処理
     try:
-        with open("model/" + filename + "_model.json", "r") as f:
-            model = model_from_json(f.read())
-        with open("model/" + filename + "_dataset.json", "r") as f:
-            dataset_dict = json.load(f)
-    except FileNotFoundError:
+        if "-f" in systemcall:
+            raise FileNotFoundError("task skipped load files")
+        model = load_model("model/" + filename + "_model.h5")
+    except (FileNotFoundError, OSError):
         dataset = TweetDataset.TweetDataset(filename + "_shaped.csv")
         model = create_model(dataset.X, dataset.Y)
         dataset_dict = dataset.to_dict()
 
-    # model_weights読み込み処理
-    try:
-        with open("model/" + filename + "_model_weights.h5", "r") as f:
-            model.load_weights(f.read())
-    except FileNotFoundError:
-        print("no weight data")
-
     model.summary()
     return model, dataset_dict
 
-
-
 if __name__ == "__main__":
-    tweets_model, tweets_dataset = open_model("mini_tweets")
+    tweets_model, tweets_dataset = open_model_dataset("mini_tweets", sys.argv[1])
     #replies_model, replies_dataset= open_model("mini_replies")
     #rts_model, rts_dataset= open_model("mini_rts")
 
-    result_model = learning(tweets_model, tweets_dataset)
+    save_model_dataset(tweets_model, tweets_dataset, "mini_tweets")
