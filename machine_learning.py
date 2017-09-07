@@ -38,7 +38,7 @@ def learning(model, dataset):
     char_indices = dataset.char_indices
     indices_char = dataset.indices_chars
 
-    for iteration in range(1, 5): # デバッグのために一時的に変更中
+    for iteration in range(1, 60):
         print()
         print('-' * 50)
         print('Iteration', iteration)
