@@ -71,6 +71,9 @@ def learning(model, dataset):
                 sys.stdout.flush()
             print()
 
+    def save_model(model):
+        return
+
 if __name__ == "__main__":
     dir = ""
     # load_csv <0:RTtweet,0:normaltweet,0<:reply
