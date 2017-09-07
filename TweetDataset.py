@@ -80,6 +80,6 @@ class TweetDataset:
 
 if __name__ == "__main__":
     # load_csv <0:RTtweet,0:normaltweet,0<:reply
-    tweets = TweetDataset("tweets_mini.csv")
-    replies = TweetDataset("replies_mini.csv")
-    rts = TweetDataset("rts_mini.csv")
+    tweets = TweetDataset("mini_tweets_shaped.csv")
+    replies = TweetDataset("mini_replies_shaped.csv")
+    rts = TweetDataset("mini_rts_shaped.csv")

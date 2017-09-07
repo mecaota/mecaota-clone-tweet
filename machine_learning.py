@@ -2,10 +2,11 @@
 import numpy as np
 import sys
 import random
+import json
 
 from keras.layers import Dense, Activation
 from keras.layers.recurrent import LSTM
-from keras.models import Sequential
+from keras.models import Sequential, model_from_json
 
 import TweetDataset
 
@@ -42,7 +43,7 @@ def learning(model, dataset):
         print()
         print('-' * 50)
         print('Iteration', iteration)
-        model.fit(X, Y, batch_size=128, epochs=1)
+        history = model.fit(X, Y, batch_size=128, epochs=1)
         start_index = random.randint(0, len(text) - maxlen - 1)
 
         for diversity in [0.2, 0.5, 1.0, 1.2]:
@@ -71,18 +72,46 @@ def learning(model, dataset):
                 sys.stdout.flush()
             print()
 
-    def save_model(model):
-        return
+def save_model(model, filename):
+    with open("model/" + filename + "_model.json", "w") as f:
+        f.write(model.to_json())
+    model.save_weights("model/" + filename + "_model_weights.hdf5")
+    
+def open_model(filename):
+    model = None
+    # model読み込み処理
+    try:
+        with open("model/" + filename + "_model.json", "r") as f:
+            model = model_from_json(f.read())
+    except FileNotFoundError:
+        dataset = TweetDataset.TweetDataset(filename + "_shaped.csv")
+        model = create_model(dataset.X, dataset.Y)
+
+    # model_weights読み込み処理
+    try:
+        with open("model/" + filename + "_model_weights.h5", "r") as f:
+            model.load_weights(f.read())
+    except FileNotFoundError:
+        print("no weight data")
+
+    model.summary()
+    return model
+
+
 
 if __name__ == "__main__":
-    dir = ""
+    tweets_model = open_model("mini_tweets")
+    #replies_model = open_model("mini_replies")
+    #rts_model = open_model("mini_rts")
+
+
     # load_csv <0:RTtweet,0:normaltweet,0<:reply
-    #tweets_dataset = TweetDataset.TweetDataset("tweets_mini.csv")
+    tweets_dataset = TweetDataset.TweetDataset("mini_tweets_shaped.csv")
     #replies_dataset = TweetDataset.TweetDataset("replies_mini.csv")
     #rts_dataset = TweetDataset.TweetDataset("rts_mini.csv")
-    tweets_dataset = TweetDataset.TweetDataset("tweets_shaped.csv")
+    #tweets_dataset = TweetDataset.TweetDataset("tweets_shaped.csv")
     #replies_dataset = TweetDataset.TweetDataset("replies_shaped.csv")
     #rts_dataset = TweetDataset.TweetDataset("rts_shaped.csv")
 
-    model = create_model(tweets_dataset.X, tweets_dataset.Y)
-    result = learning(model, tweets_dataset)
+    #model = create_model(tweets_dataset.X, tweets_dataset.Y)
+    result_model = learning(tweets_model, tweets_dataset)
