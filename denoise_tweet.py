@@ -32,16 +32,27 @@ def _denoise(tweets):
     # ブラックリスト処理
     for i in exc:
         tweets = tweets[~tweets['source'].str.contains(i)]
-    filtered = tweets[~tweets['text'].str.contains('')]
 
     # ホワイトリスト処理
     for i in inc:
-        filtered = pandas.concat([filtered,tweets[tweets['source'].str.contains(i)]])
+        tweets = pandas.concat([tweets,tweets[tweets['source'].str.contains(i)]])
     # データセットとして使うデータ列を選択
-    tweets = filtered[['tweet_id','text']]
+    tweets = tweets[['tweet_id','text']]
 
-    # @hogeを削除
-    tweets = tweets["text"].str.replace("(RT\s)*@\w*(:\s)?", "")
+    # #_キョクナビタグのツイートを削除
+    tweets = tweets[~tweets["text"].str.contains("#_キョクナビ")]
+
+    # @リプとハッシュタグを空白1文字へ置換
+    tweets["text"] = tweets["text"].str.replace("[#]\S+\s", " ")
+    tweets["text"] = tweets["text"].str.replace("(RT\s)*@\w*(:\s)?", " ")
+    
+    # urlを空白1文字へ置換
+    tweets["text"] = tweets["text"].str.replace("(http)s?://\S+\s*", " ")
+
+    # 空白行を削除して空白削除
+    tweets = tweets[~tweets["text"].str.contains("^\s+$")]
+    tweets["text"] = tweets["text"].str.replace("\s+", "")
+    tweets.dropna()
 
     return tweets
 
