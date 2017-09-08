@@ -73,7 +73,7 @@ if __name__ == "__main__":
 
     # tweet_filter <0:RTtweet,0:normaltweet,0<:reply
     rts, mini_rts = tweet_filter(tweets_csv, -1)
-    tweets, mini_tweets = tweet_filter(tweets_csv, 0, 80000)
+    tweets, mini_tweets = tweet_filter(tweets_csv, 0, 60000)
     replies, mini_replies = tweet_filter(tweets_csv, 1)
 
     # csv export
