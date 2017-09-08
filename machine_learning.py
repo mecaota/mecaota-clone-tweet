@@ -36,10 +36,9 @@ def learning(model, dataset):
     Y = dataset["Y"]
     maxlen = X.shape[1]
     text = ""
-    for i in X[0]:
+    for i in dataset["sentence"]:
         text += str(i)
     chars = dataset["chars"]
-    print(X[2])
     char_indices = dataset["char_indices"]
     indices_char = dataset["indices_chars"]
     cb = None
