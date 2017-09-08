@@ -2,6 +2,7 @@
 import pandas
 import numpy as np
 import MeCab
+from pykakasi import kakasi
 
 ### TweetDataset ###
 class TweetDataset:
