@@ -2,14 +2,14 @@
 import pandas
 import sys
 
-def tweet_filter(tweets, mode = 0):
+def tweet_filter(tweets, mode = 0, head_num = 3000):
     # normal Tweet用フィルタ処理
     if mode == 0:
         # in_reply_to_status_idとin_reply_to_user_idの値が入っているツイートを除外
         tweets = tweets[tweets["in_reply_to_status_id"].isnull() | tweets["in_reply_to_user_id"].isnull()]
         # RTされたツイート「RT @」で始まるツイートを除外
         tweets = tweets[~tweets['text'].str.contains('RT.@*')]
-        return _denoise(tweets)
+        tweets = _denoise(tweets)
 
     # reply Tweet用フィルタ処理
     elif mode > 0:
@@ -17,13 +17,17 @@ def tweet_filter(tweets, mode = 0):
         tweets = tweets[tweets["in_reply_to_status_id"].notnull() | tweets["in_reply_to_user_id"].notnull()]
         # RTされたツイート「RT @」で始まるツイートを除外
         tweets = tweets[~tweets['text'].str.contains('RT.@*')]
-        return _denoise(tweets)
+        tweets = _denoise(tweets)
 
     # RT Tweet用フィルタ処理
     elif mode < 0:
         # RTされたツイート「RT @」で始まるツイート以外を除外
         tweets = tweets[tweets['text'].str.contains('RT.@*')]
-        return _denoise(tweets)
+        tweets = _denoise(tweets)
+
+    mini_tweets = tweets.head(head_num)
+
+    return tweets, mini_tweets
 
 def _denoise(tweets):
     # ツイート元クライアントを指定
@@ -65,11 +69,14 @@ if __name__ == "__main__":
     tweets_csv = pandas.read_csv(args[1],encoding="utf-8")
 
     # tweet_filter <0:RTtweet,0:normaltweet,0<:reply
-    rts = tweet_filter(tweets_csv, -1)
-    tweets = tweet_filter(tweets_csv, 0)
-    replies = tweet_filter(tweets_csv, 1)
+    rts, mini_rts = tweet_filter(tweets_csv, -1)
+    tweets, mini_tweets = tweet_filter(tweets_csv, 0, 80000)
+    replies, mini_replies = tweet_filter(tweets_csv, 1)
 
     # csv export
     rts.to_csv("tweetdata/rts_shaped.csv", header=True)
+    mini_rts.to_csv("tweetdata/mini_rts_shaped.csv", header=True)
     tweets.to_csv("tweetdata/tweets_shaped.csv", header=True)
-    replies.to_csv("tweetdata/replies_shaped.csv", header=True)
+    mini_tweets.to_csv("tweetdata/mini_tweets_shaped.csv", header=True)
+    replies.to_csv("tweetdata/mini_replies_shaped.csv", header=True)
+    mini_replies.to_csv("tweetdata/mini_replies_shaped.csv", header=True)
