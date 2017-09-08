@@ -13,6 +13,7 @@ from keras.callbacks import ModelCheckpoint
 import TweetDataset
 
 def create_model(X, Y):
+    print("model create task processing,,,")
     epochs = 2
     batch_size = X.shape[1]
     output_dim = X.shape[2]
@@ -43,7 +44,7 @@ def learning(model, dataset):
     cb = None
 
 
-    for iteration in range(1, 2):#now proseccisns
+    for iteration in range(1, 60):
         print()
         print('-' * 50)
         print('Iteration', iteration)
@@ -79,6 +80,7 @@ def learning(model, dataset):
 
 def save_model_dataset(model, dataset, filename):
     model.save("model/" + filename + "_model.h5")
+    print("model saved at" + "model/" + filename + "_model.h5")
     
 def open_model_dataset(filename, systemcall):
     model = None
@@ -86,9 +88,14 @@ def open_model_dataset(filename, systemcall):
     # modelとdataset読み込み処理
     try:
         if "-f" in systemcall:
-            raise FileNotFoundError("task skipped load files")
+            print(("model load task skipped"))
+            raise FileNotFoundError("model load task skipped")
+        print("model load from: " + "model/" + filename + "_model.h5")
         model = load_model("model/" + filename + "_model.h5")
+        dataset = TweetDataset.TweetDataset(filename + "_shaped.csv")
+        dataset_dict = dataset.to_dict()
     except (FileNotFoundError, OSError):
+        print("model create from dataset")
         dataset = TweetDataset.TweetDataset(filename + "_shaped.csv")
         model = create_model(dataset.X, dataset.Y)
         dataset_dict = dataset.to_dict()
@@ -97,8 +104,10 @@ def open_model_dataset(filename, systemcall):
     return model, dataset_dict
 
 if __name__ == "__main__":
-    tweets_model, tweets_dataset = open_model_dataset("mini_tweets", sys.argv[1])
+    tweets_model, tweets_dataset = open_model_dataset("mini_tweets", sys.argv)
     #replies_model, replies_dataset= open_model("mini_replies")
     #rts_model, rts_dataset= open_model("mini_rts")
+
+    tweets_model = learning(tweets_model, tweets_dataset)
 
     save_model_dataset(tweets_model, tweets_dataset, "mini_tweets")
