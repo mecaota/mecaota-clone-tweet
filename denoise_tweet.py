@@ -47,7 +47,7 @@ def _denoise(tweets):
     tweets = tweets[~tweets["text"].str.contains("#_キョクナビ")]
 
     # @リプとハッシュタグを空白1文字へ置換
-    tweets["text"] = tweets["text"].str.replace("[#]\S+\s", " ")
+    tweets["text"] = tweets["text"].str.replace("[#]\S*\s?", " ")
     tweets["text"] = tweets["text"].str.replace("(RT\s)*@\w*(:\s)?", " ")
     
     # urlを空白1文字へ置換
