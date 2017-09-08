@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import pandas
 import numpy as np
+import MeCab
 
 ### TweetDataset ###
 class TweetDataset:
