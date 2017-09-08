@@ -59,6 +59,6 @@ if __name__ == "__main__":
     replies = tweet_filter(tweets_csv, 1)
 
     # csv export
-    rts.to_csv("rts_shaped.csv", header=True)
-    tweets.to_csv("tweets_shaped.csv", header=True)
-    replies.to_csv("replies_shaped.csv", header=True)
+    rts.to_csv("tweetdata/rts_shaped.csv", header=True)
+    tweets.to_csv("tweetdata/tweets_shaped.csv", header=True)
+    replies.to_csv("tweetdata/replies_shaped.csv", header=True)

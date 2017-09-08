@@ -95,11 +95,11 @@ def open_model_dataset(systemcall):
             raise FileNotFoundError("model load task skipped")
         print("model load from: " + "model/" + filename + "_model.h5")
         model = load_model("model/" + filename + "_model.h5")
-        dataset = TweetDataset.TweetDataset(filename + "_shaped.csv")
+        dataset = TweetDataset.TweetDataset("tweetdata/" + filename + "_shaped.csv")
         dataset_dict = dataset.to_dict()
     except (FileNotFoundError, OSError):
         print("model create from dataset")
-        dataset = TweetDataset.TweetDataset(filename + "_shaped.csv")
+        dataset = TweetDataset.TweetDataset("tweetdata/" + filename + "_shaped.csv")
         model = create_model(dataset.X, dataset.Y)
         dataset_dict = dataset.to_dict()
 
