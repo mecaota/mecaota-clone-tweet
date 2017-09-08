@@ -44,7 +44,7 @@ def learning(model, dataset):
     cb = None
 
 
-    for iteration in range(1, 2):
+    for iteration in range(1, 60):
         print()
         print('-' * 50)
         print('Iteration', iteration)

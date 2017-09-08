@@ -7,7 +7,6 @@ from pykakasi import kakasi
 ### TweetDataset ###
 class TweetDataset:
     def __init__(self, path):
-        self.tweets = pandas.read_csv(open(path,'rU'), encoding="utf-8")
         print("TweetModel instance create task start from " + str(path))
         self.strmax = 20
         self.sentences = []
@@ -16,7 +15,7 @@ class TweetDataset:
         self.char_indices = {}
         self.indices_chars = {}
         self.alltweet = ""
-        self.__str_split()
+        self.__str_split(pandas.read_csv(open(path,'rU'), encoding="utf-8"))
         self.__vectrize()
 
         self.X = np.zeros((len(self.sentences), self.strmax, len(self.chars)),dtype=np.bool)
@@ -38,15 +37,22 @@ class TweetDataset:
         dataset["Y"] = self.Y
         return dataset
 
-    # 文章結合後STR_MAX語ごとに文字列分割処理
-    def __str_split(self):
+    # 文章結合後STR_MAX語ごとに文字列分割処理, ついでにひらがな化処理も
+    def __str_split(self, tweets):
         alltwi = ""
         sentences = []
         next_chars = []
-        for i in self.tweets["text"]:
+        for i in tweets["text"]:
             alltwi += str(i)
         self.alltweet = alltwi
         
+        # kakasiによるひらがな変換
+        kks = kakasi()
+        kks.setMode('K', 'H') # カタカナをひらがなに変換するよう設定
+        kks.setMode('J', 'H') # 漢字を平仮名にするよう設定
+        conv = kks.getConverter()
+        alltwi = conv.do(alltwi)
+
         for i in range(0, len(alltwi) - self.strmax, 3):
             sentences.append(alltwi[i: i + self.strmax])
             next_chars.append(alltwi[i + self.strmax])
@@ -60,7 +66,7 @@ class TweetDataset:
         char_indices = {}
         indices_chars = {}
 
-        for i in self.tweets["text"]:
+        for i in self.sentences:
             for j in str(i):
                 if j not in chars:
                     chars.append(str(j))
@@ -84,6 +90,6 @@ class TweetDataset:
 
 if __name__ == "__main__":
     # load_csv <0:RTtweet,0:normaltweet,0<:reply
-    tweets = TweetDataset("mini_tweets_shaped.csv")
-    replies = TweetDataset("mini_replies_shaped.csv")
-    rts = TweetDataset("mini_rts_shaped.csv")
+    tweets = TweetDataset("tweetdata/mini_tweets_shaped.csv")
+    replies = TweetDataset("tweetdata/mini_replies_shaped.csv")
+    rts = TweetDataset("tweetdata/mini_rts_shaped.csv")
