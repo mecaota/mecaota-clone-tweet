@@ -44,7 +44,7 @@ def learning(model, dataset):
     cb = None
 
 
-    for iteration in range(1, 60):
+    for iteration in range(1, 2):
         print()
         print('-' * 50)
         print('Iteration', iteration)
@@ -56,12 +56,13 @@ def learning(model, dataset):
             print('----- diversity:', diversity)
 
             generated = ''
+            tweet_strlen = random.randint(1, 140)
             sentence = text[start_index: start_index + maxlen]
             generated += str(sentence)
             print('----- Generating with seed: "' + str(sentence) + '"')
             sys.stdout.write(generated)
 
-            for i in range(140):
+            for i in range(tweet_strlen):
                 x = np.zeros((1, maxlen, len(chars)))
                 for t, char in enumerate(sentence):
                     x[0, t, char_indices[char]] = 1.
