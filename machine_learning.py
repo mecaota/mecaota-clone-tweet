@@ -104,10 +104,10 @@ def open_model_dataset(filename, systemcall):
     return model, dataset_dict
 
 if __name__ == "__main__":
-    tweets_model, tweets_dataset = open_model_dataset("mini_tweets", sys.argv)
+    tweets_model, tweets_dataset = open_model_dataset("tweets", sys.argv)
     #replies_model, replies_dataset= open_model("mini_replies")
     #rts_model, rts_dataset= open_model("mini_rts")
 
     tweets_model = learning(tweets_model, tweets_dataset)
 
-    save_model_dataset(tweets_model, tweets_dataset, "mini_tweets")
+    save_model_dataset(tweets_model, tweets_dataset, "tweets")
