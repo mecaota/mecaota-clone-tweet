@@ -54,7 +54,7 @@ def _denoise(tweets):
     tweets["text"] = tweets["text"].str.replace("(http)s?://\S+\s*", " ")
 
     # 記号を空白1文字へ置換
-    tweets["text"] = tweets["text"].str.replace("[!-/:-@[-`{-~”’・…]（）｛｝；：", " ")
+    tweets["text"] = tweets["text"].str.replace("[!-/:-@[-`{-~”’・…]（）（）｛｝；：「」「」", " ")
 
     # 空白行を削除して空白削除
     tweets = tweets[~tweets["text"].str.contains("^\s+$")]
