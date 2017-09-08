@@ -12,9 +12,11 @@ from keras.callbacks import ModelCheckpoint
 
 import TweetDataset
 
-def create_model(batch_size, output_dim):
+def create_model(X, Y):
     print("model create task processing,,,")
     epochs = 2
+    batch_size = X.shape[1]
+    output_dim = X.shape[2]
     model = Sequential()
     model.add(LSTM(64, return_sequences=False, input_shape=(batch_size, output_dim)))
     model.add(Dense(output_dim, activation='relu'))
@@ -44,7 +46,7 @@ def learning(model, dataset):
     cb = None
 
 
-    for iteration in range(1, 60):
+    for iteration in range(1, 2):
         print()
         print('-' * 50)
         print('Iteration', iteration)
@@ -101,7 +103,7 @@ def open_model_dataset(systemcall):
     except (FileNotFoundError, OSError):
         print("model create from dataset")
         dataset = TweetDataset.TweetDataset("tweetdata/" + filename + "_shaped.csv")
-        model = create_model(dataset.X.shape[1], dataset.X.shape[2])
+        model = create_model(dataset.X, dataset.Y)
         dataset_dict = dataset.to_dict()
 
     model.summary()
