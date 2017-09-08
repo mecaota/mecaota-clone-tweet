@@ -82,9 +82,12 @@ def save_model_dataset(model, dataset, filename):
     model.save("model/" + filename + "_model.h5")
     print("model saved at" + "model/" + filename + "_model.h5")
     
-def open_model_dataset(filename, systemcall):
+def open_model_dataset(systemcall):
     model = None
     dataset_dict = {}
+
+    filename = select_file(systemcall)
+
     # modelとdataset読み込み処理
     try:
         if "-f" in systemcall:
@@ -92,22 +95,35 @@ def open_model_dataset(filename, systemcall):
             raise FileNotFoundError("model load task skipped")
         print("model load from: " + "model/" + filename + "_model.h5")
         model = load_model("model/" + filename + "_model.h5")
-        dataset = TweetDataset.TweetDataset(filename + "_shaped.csv")
+        dataset = TweetDataset.TweetDataset("tweetdata/" + filename + "_shaped.csv")
         dataset_dict = dataset.to_dict()
     except (FileNotFoundError, OSError):
         print("model create from dataset")
-        dataset = TweetDataset.TweetDataset(filename + "_shaped.csv")
+        dataset = TweetDataset.TweetDataset("tweetdata/" + filename + "_shaped.csv")
         model = create_model(dataset.X, dataset.Y)
         dataset_dict = dataset.to_dict()
 
     model.summary()
     return model, dataset_dict
 
+def select_file(systemcall):
+    # データを選ぶ処理
+    filename = ""
+    if "tweets" in systemcall:
+        filename = "tweets"
+    elif "replies" in systemcall:
+        filename = "replies"
+    elif "rts" in systemcall:
+        filename = "rts"
+    elif "mini_replies" in systemcall:
+        filename = "mini_replies"
+    elif "mini_rts" in systemcall:
+        filename = "mini_rts"
+    else:
+        filename = "mini_tweets"
+    return filename
+
 if __name__ == "__main__":
-    tweets_model, tweets_dataset = open_model_dataset("tweets", sys.argv)
-    #replies_model, replies_dataset= open_model("mini_replies")
-    #rts_model, rts_dataset= open_model("mini_rts")
-
-    tweets_model = learning(tweets_model, tweets_dataset)
-
-    save_model_dataset(tweets_model, tweets_dataset, "tweets")
+    model, dataset = open_model_dataset(sys.argv)
+    model = learning(model, dataset)
+    save_model_dataset(model, dataset, select_file(sys.argv))
