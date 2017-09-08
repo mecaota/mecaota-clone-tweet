@@ -82,9 +82,12 @@ def save_model_dataset(model, dataset, filename):
     model.save("model/" + filename + "_model.h5")
     print("model saved at" + "model/" + filename + "_model.h5")
     
-def open_model_dataset(filename, systemcall):
+def open_model_dataset(systemcall):
     model = None
     dataset_dict = {}
+
+    filename = select_file(systemcall)
+
     # modelとdataset読み込み処理
     try:
         if "-f" in systemcall:
@@ -103,21 +106,24 @@ def open_model_dataset(filename, systemcall):
     model.summary()
     return model, dataset_dict
 
-if __name__ == "__main__":
-    datatype = ""
-    if "tweets" in sys.argv:
-        datatype = "tweets"
-    elif "replies" in sys.argv:
-        datatype = "replies"
-    elif "rts" in sys.argv:
-        datatype = "rts"
-    elif "mini_replies" in sys.argv:
-        datatype = "mini_replies"
-    elif "mini_rts" in sys.argv:
-        datatype = "mini_rts"
+def select_file(systemcall):
+    # データを選ぶ処理
+    filename = ""
+    if "tweets" in systemcall:
+        filename = "tweets"
+    elif "replies" in systemcall:
+        filename = "replies"
+    elif "rts" in systemcall:
+        filename = "rts"
+    elif "mini_replies" in systemcall:
+        filename = "mini_replies"
+    elif "mini_rts" in systemcall:
+        filename = "mini_rts"
     else:
-        datatype = "mini_tweets"
-    
-    model, dataset = open_model_dataset(datatype, sys.argv)
+        filename = "mini_tweets"
+    return filename
+
+if __name__ == "__main__":
+    model, dataset = open_model_dataset(sys.argv)
     model = learning(model, dataset)
-    save_model_dataset(model, dataset, datatype)
+    save_model_dataset(model, dataset, select_file(sys.argv))
