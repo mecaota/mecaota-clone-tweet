@@ -4,21 +4,21 @@ import numpy as np
 import MeCab
 from pykakasi import kakasi
 
+STR_MAX = 20
+
 ### TweetDataset ###
 class TweetDataset:
     def __init__(self, path):
         print("TweetModel instance create task start from " + str(path))
-        self.strmax = 20
         self.sentences = []
         self.next_chars = []
         self.chars = []
         self.char_indices = {}
         self.indices_chars = {}
-        self.alltweet = ""
         self.__str_split(pandas.read_csv(open(path,'rU'), encoding="utf-8"))
         self.__vectrize()
 
-        self.X = np.zeros((len(self.sentences), self.strmax, len(self.chars)),dtype=np.bool)
+        self.X = np.zeros((len(self.sentences), STR_MAX, len(self.chars)),dtype=np.bool)
         self.Y = np.zeros((len(self.sentences),len(self.chars)),dtype=np.bool)
         print("TweetModel labeling start " + str(path))
         self.__labering()
@@ -26,13 +26,11 @@ class TweetDataset:
     # このオブジェクト内の再利用データをdict型で返す
     def to_dict(self):
         dataset = {}
-        dataset["strmax"] = self.strmax
         dataset["sentence"] = self.sentences
         dataset["next_chars"] = self.next_chars
         dataset["chars"] = self.chars
         dataset["char_indices"] = self.char_indices
         dataset["indices_chars"] = self.indices_chars
-        dataset["alltweet"] = self.alltweet
         dataset["X"] = self.X
         dataset["Y"] = self.Y
         return dataset
@@ -53,9 +51,9 @@ class TweetDataset:
         conv = kks.getConverter()
         alltwi = conv.do(alltwi)
 
-        for i in range(0, len(alltwi) - self.strmax, 3):
-            sentences.append(alltwi[i: i + self.strmax])
-            next_chars.append(alltwi[i + self.strmax])
+        for i in range(0, len(alltwi) - STR_MAX, 3):
+            sentences.append(alltwi[i: i + STR_MAX])
+            next_chars.append(alltwi[i + STR_MAX])
 
         self.sentences = sentences
         self.next_chars = next_chars
