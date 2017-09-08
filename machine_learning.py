@@ -2,21 +2,25 @@
 import numpy as np
 import sys
 import random
+import json
+import pandas
 
 from keras.layers import Dense, Activation
 from keras.layers.recurrent import LSTM
-from keras.models import Sequential
+from keras.models import Sequential, load_model
+from keras.callbacks import ModelCheckpoint
 
 import TweetDataset
 
 def create_model(X, Y):
+    print("model create task processing,,,")
     epochs = 2
     batch_size = X.shape[1]
     output_dim = X.shape[2]
     model = Sequential()
     model.add(LSTM(64, return_sequences=False, input_shape=(batch_size, output_dim)))
     model.add(Dense(output_dim, activation='relu'))
-    model.compile(loss = 'mean_squared_error', optimizer = 'adam')
+    model.compile(loss = 'mean_squared_error', optimizer = 'rmsprop')
     return model
 
 def sampling(preds, temperature=1.0):
@@ -30,19 +34,21 @@ def sampling(preds, temperature=1.0):
 
 def learning(model, dataset):
     # train the model, output generated text after each iteration
-    X = dataset.X
-    Y = dataset.Y
-    maxlen = dataset.strmax
-    text = dataset.alltweet
-    chars = dataset.chars
-    char_indices = dataset.char_indices
-    indices_char = dataset.indices_chars
+    X = dataset["X"]
+    Y = dataset["Y"]
+    maxlen = dataset["strmax"]
+    text = dataset["alltweet"]
+    chars = dataset["chars"]
+    char_indices = dataset["char_indices"]
+    indices_char = dataset["indices_chars"]
+    cb = None
 
-    for iteration in range(1, 60): # デバッグのために一時的に変更中
+
+    for iteration in range(1, 60):
         print()
         print('-' * 50)
         print('Iteration', iteration)
-        model.fit(X, Y, batch_size=128, epochs=1)
+        history = model.fit(X, Y, batch_size=128, epochs=1, callbacks=cb)
         start_index = random.randint(0, len(text) - maxlen - 1)
 
         for diversity in [0.2, 0.5, 1.0, 1.2]:
@@ -70,16 +76,38 @@ def learning(model, dataset):
                 sys.stdout.write(next_char)
                 sys.stdout.flush()
             print()
+    return model
+
+def save_model_dataset(model, dataset, filename):
+    model.save("model/" + filename + "_model.h5")
+    print("model saved at" + "model/" + filename + "_model.h5")
+    
+def open_model_dataset(filename, systemcall):
+    model = None
+    dataset_dict = {}
+    # modelとdataset読み込み処理
+    try:
+        if "-f" in systemcall:
+            print(("model load task skipped"))
+            raise FileNotFoundError("model load task skipped")
+        print("model load from: " + "model/" + filename + "_model.h5")
+        model = load_model("model/" + filename + "_model.h5")
+        dataset = TweetDataset.TweetDataset(filename + "_shaped.csv")
+        dataset_dict = dataset.to_dict()
+    except (FileNotFoundError, OSError):
+        print("model create from dataset")
+        dataset = TweetDataset.TweetDataset(filename + "_shaped.csv")
+        model = create_model(dataset.X, dataset.Y)
+        dataset_dict = dataset.to_dict()
+
+    model.summary()
+    return model, dataset_dict
 
 if __name__ == "__main__":
-    dir = ""
-    # load_csv <0:RTtweet,0:normaltweet,0<:reply
-    tweets_dataset = TweetDataset.TweetDataset("tweets_mini.csv")
-    replies_dataset = TweetDataset.TweetDataset("replies_mini.csv")
-    rts_dataset = TweetDataset.TweetDataset("rts_mini.csv")
-    #tweets_dataset = TweetDataset.TweetDataset("tweets_shaped.csv")
-    #replies_dataset = TweetDataset.TweetDataset("replies_shaped.csv")
-    #rts_dataset = TweetDataset.TweetDataset("rts_shaped.csv")
+    tweets_model, tweets_dataset = open_model_dataset("mini_tweets", sys.argv)
+    #replies_model, replies_dataset= open_model("mini_replies")
+    #rts_model, rts_dataset= open_model("mini_rts")
 
-    model = create_model(tweets_dataset.X, tweets_dataset.Y)
-    result = learning(model, tweets_dataset)
+    tweets_model = learning(tweets_model, tweets_dataset)
+
+    save_model_dataset(tweets_model, tweets_dataset, "mini_tweets")

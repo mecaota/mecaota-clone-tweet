@@ -21,7 +21,21 @@ class TweetDataset:
         self.Y = np.zeros((len(self.sentences),len(self.chars)),dtype=np.bool)
         print("TweetModel labeling start " + str(path))
         self.__labering()
-        
+    
+    # このオブジェクト内の再利用データをdict型で返す
+    def to_dict(self):
+        dataset = {}
+        dataset["strmax"] = self.strmax
+        dataset["sentence"] = self.sentences
+        dataset["next_chars"] = self.next_chars
+        dataset["chars"] = self.chars
+        dataset["char_indices"] = self.char_indices
+        dataset["indices_chars"] = self.indices_chars
+        dataset["alltweet"] = self.alltweet
+        dataset["X"] = self.X
+        dataset["Y"] = self.Y
+        return dataset
+
     # 文章結合後STR_MAX語ごとに文字列分割処理
     def __str_split(self):
         alltwi = ""
@@ -68,9 +82,6 @@ class TweetDataset:
 
 if __name__ == "__main__":
     # load_csv <0:RTtweet,0:normaltweet,0<:reply
-    tweets = TweetDataset("tweets_mini.csv")
-    replies = TweetDataset("replies_mini.csv")
-    rts = TweetDataset("rts_mini.csv")
-    #tweets = TweetDataset("tweets_shaped.csv")
-    #replies = TweetDataset("replies_shaped.csv")
-    #rts = TweetDataset("rts_shaped.csv")
+    tweets = TweetDataset("mini_tweets_shaped.csv")
+    replies = TweetDataset("mini_replies_shaped.csv")
+    rts = TweetDataset("mini_rts_shaped.csv")
