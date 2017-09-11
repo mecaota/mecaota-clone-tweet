@@ -8,7 +8,7 @@ STR_MAX = 20
 
 ### TweetDataset ###
 class TweetDataset:
-    def __init__(self, path):
+    def __init__(self, path, systemcall=[]):
         tweets = pandas.read_csv(open(path,'rU'), encoding="utf-8")
         print("TweetModel instance create task start from " + str(path))
         self.sentences = []
@@ -16,7 +16,7 @@ class TweetDataset:
         self.chars = []
         self.char_indices = {}
         self.indices_chars = {}
-        self.__str_split(tweets)
+        self.__str_split(tweets, systemcall)
         self.__vectrize()
 
         self.X = np.zeros((len(self.sentences), STR_MAX, len(self.chars)),dtype=np.bool)
@@ -37,19 +37,18 @@ class TweetDataset:
         return dataset
 
     # 文章結合後STR_MAX語ごとに文字列分割処理
-    def __str_split(self, tweets):
+    def __str_split(self, tweets, systemcall):
         alltwi = ""
         sentences = []
         next_chars = []
         for i in tweets["text"]:
             alltwi += str(i)
 
-        # kakasiによるひらがな変換
-        kks = kakasi()
-        kks.setMode('K', 'H') # カタカナをひらがなに変換するよう設定
-        kks.setMode('J', 'H') # 漢字を平仮名にするよう設定
-        conv = kks.getConverter()
-        alltwi = conv.do(alltwi)
+        if "-kana" in systemcall:
+            print("kanjikana converting")
+            alltwi = self.__kanjiconvert(alltwi)
+        else:
+            print("kanjikana convert skip")
         
         for i in range(0, len(alltwi) - STR_MAX, 3):
             sentences.append(alltwi[i: i + STR_MAX])
@@ -85,6 +84,14 @@ class TweetDataset:
             for k,l in enumerate(j):
                 self.X[i][k][self.char_indices[l]] = True
             self.Y[i][self.char_indices[self.next_chars[i]]] = True
+
+    def __kanjiconvert(self, text):
+        # kakasiによるひらがな変換
+        kks = kakasi()
+        kks.setMode('K', 'H') # カタカナをひらがなに変換するよう設定
+        kks.setMode('J', 'H') # 漢字を平仮名にするよう設定
+        conv = kks.getConverter()
+        return conv.do(text)
 
 if __name__ == "__main__":
     # load_csv <0:RTtweet,0:normaltweet,0<:reply
