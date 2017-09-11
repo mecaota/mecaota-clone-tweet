@@ -6,9 +6,10 @@ import json
 import pandas
 
 from keras.layers import Dense, Activation
+from keras.layers.core import Dropout
 from keras.layers.recurrent import LSTM
 from keras.models import Sequential, load_model
-from keras.callbacks import ModelCheckpoint
+from keras.callbacks import ModelCheckpoint, EarlyStopping
 
 import TweetDataset
 
@@ -20,6 +21,7 @@ def create_model(X, Y):
     model = Sequential()
     model.add(LSTM(64, return_sequences=False, input_shape=(batch_size, output_dim)))
     model.add(Dense(output_dim, activation='relu'))
+    model.add(Dropout(rate=0.1))
     model.compile(loss = 'mean_squared_error', optimizer = 'rmsprop')
     return model
 
@@ -38,7 +40,8 @@ def learning(model, dataset):
     Y = dataset["Y"]
     maxlen = X.shape[1]
     text = dataset["alltweet"]
-    cb = None
+    filepath = "model_log/" + "weights.{epoch:02d}-{loss:.4f}.hdf5"
+    cb = [EarlyStopping(monitor="loss"), ModelCheckpoint(filepath=filepath, verbose=1, monitor="loss", save_best_only=True)]
     chars = dataset["chars"]
     char_indices = dataset["char_indices"]
     indices_char = dataset["indices_chars"]
