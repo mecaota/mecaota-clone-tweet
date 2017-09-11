@@ -36,15 +36,17 @@ def learning(model, dataset):
     # train the model, output generated text after each iteration
     X = dataset["X"]
     Y = dataset["Y"]
-    maxlen = dataset["strmax"]
-    text = dataset["alltweet"]
+    maxlen = X.shape[1]
+    text = ""
+    for i in dataset["sentence"]:
+        text += str(i)
     chars = dataset["chars"]
     char_indices = dataset["char_indices"]
     indices_char = dataset["indices_chars"]
     cb = None
 
 
-    for iteration in range(1, 2):
+    for iteration in range(1, 60):
         print()
         print('-' * 50)
         print('Iteration', iteration)
