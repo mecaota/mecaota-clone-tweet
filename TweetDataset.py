@@ -12,6 +12,7 @@ class TweetDataset:
         tweets = pandas.read_csv(open(path,'rU'), encoding="utf-8")
         print("TweetModel instance create task start from " + str(path))
         self.sentences = []
+        self.alltweet = ""
         self.next_chars = []
         self.chars = []
         self.char_indices = {}
@@ -28,6 +29,7 @@ class TweetDataset:
     def to_dict(self):
         dataset = {}
         dataset["sentence"] = self.sentences
+        dataset["alltweet"] = self.alltweet
         dataset["next_chars"] = self.next_chars
         dataset["chars"] = self.chars
         dataset["char_indices"] = self.char_indices
@@ -56,6 +58,7 @@ class TweetDataset:
 
         self.sentences = sentences
         self.next_chars = next_chars
+        self.alltweet = alltwi
         
     def __vectrize(self):
         # char生成処理self.chars = []
