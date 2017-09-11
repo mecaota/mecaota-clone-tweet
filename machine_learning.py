@@ -38,11 +38,9 @@ def learning(model, dataset):
     X = dataset["X"]
     Y = dataset["Y"]
     maxlen = X.shape[1]
-    text = ""
+    text = dataset["alltweet"]
     filepath = "model_log/" + "weights.{epoch:02d}-{loss:.4f}.hdf5"
     cb = [EarlyStopping(monitor="loss"), ModelCheckpoint(filepath=filepath, verbose=1, monitor="loss", save_best_only=True)]
-    for i in dataset["sentence"]:
-        text += str(i)
     chars = dataset["chars"]
     char_indices = dataset["char_indices"]
     indices_char = dataset["indices_chars"]

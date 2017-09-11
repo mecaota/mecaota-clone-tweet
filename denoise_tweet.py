@@ -108,7 +108,7 @@ if __name__ == "__main__":
     mini_rts.to_csv("tweetdata/mini_rts_shaped.csv", header=True)
     tweets.to_csv("tweetdata/tweets_shaped.csv", header=True)
     mini_tweets.to_csv("tweetdata/mini_tweets_shaped.csv", header=True)
-    replies.to_csv("tweetdata/mini_replies_shaped.csv", header=True)
+    replies.to_csv("tweetdata/replies_shaped.csv", header=True)
     mini_replies.to_csv("tweetdata/mini_replies_shaped.csv", header=True)
 
     print("Process done💃")
