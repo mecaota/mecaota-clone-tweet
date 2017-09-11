@@ -37,14 +37,11 @@ def learning(model, dataset):
     X = dataset["X"]
     Y = dataset["Y"]
     maxlen = X.shape[1]
-    text = ""
-    for i in dataset["sentence"]:
-        text += str(i)
+    text = dataset["alltweet"]
+    cb = None
     chars = dataset["chars"]
     char_indices = dataset["char_indices"]
     indices_char = dataset["indices_chars"]
-    cb = None
-
 
     for iteration in range(1, 60):
         print()
