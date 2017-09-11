@@ -2,9 +2,9 @@
 import pandas
 import sys
 import string
-import unicodedata
 
 def tweet_filter(tweets, mode = 0, head_num = 3000):
+    print()
     # normal Tweet用フィルタ処理
     if mode == 0:
         # in_reply_to_status_idとin_reply_to_user_idの値が入っているツイートを除外
@@ -81,6 +81,7 @@ def _denoise(tweets):
     tweets = tweets[~tweets["text"].str.contains("^\s+$")]
     tweets["text"] = tweets["text"].str.replace("\s+", "")
     tweets.dropna()
+    print("------------------------------")
 
     return tweets
 
