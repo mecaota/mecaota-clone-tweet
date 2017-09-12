@@ -34,20 +34,26 @@ def oauthTwitter(api_keys):
 
 # textのツイートを投稿
 def postTweet(twitter, text):
-    if len(text) >= 140:
-        return "error:string size is over"
-    apiurl = "https://api.twitter.com/1.1/" + "statuses/update" + ".json"
-    params = {"status": text}
-    req = twitter.post(apiurl, params=params)
-    return json.loads(req.text)
+    if twitter:
+        if len(text) >= 140:
+            return "error:string size is over"
+        apiurl = "https://api.twitter.com/1.1/" + "statuses/update" + ".json"
+        params = {"status": text}
+        req = twitter.post(apiurl, params=params)
+        return json.loads(req.text)
+    else:
+        return "tweet post skipped"
 
 
 # tweet用初期化
 def initTwitter():
-    settings = openJSON("_twitter_settings.json")  # setting.JSON open
-    api_keys = settings["API_KEY"]  # APIkey
-    twitter = oauthTwitter(api_keys)  # oauth認証にてツイッターオブジェクト生成
-    return twitter
+    try:
+        settings = openJSON("_twitter_settings.json")  # setting.JSON open
+        api_keys = settings["API_KEY"]  # APIkey
+        twitter = oauthTwitter(api_keys)  # oauth認証にてツイッターオブジェクト生成
+        return twitter
+    except FileNotFoundError:
+        return None
 
 
 if __name__ == "__main__":
