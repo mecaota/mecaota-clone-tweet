@@ -5,11 +5,13 @@ import random
 import json
 import pandas
 
-from keras.layers import Dense, Activation
-from keras.layers.core import Dropout
-from keras.layers.recurrent import LSTM
-from keras.models import Sequential, load_model
-from keras.callbacks import ModelCheckpoint, EarlyStopping
+import tensorflow as tf
+from tensorflow.contrib.keras.python import keras
+from tensorflow.contrib.keras.python.keras.layers import Dense, Activation
+from tensorflow.contrib.keras.python.keras.layers.core import Dropout
+from tensorflow.contrib.keras.python.keras.layers.recurrent import LSTM
+from tensorflow.contrib.keras.python.keras.models import Sequential, load_model
+from tensorflow.contrib.keras.python.keras.callbacks import ModelCheckpoint, EarlyStopping, TensorBoard
 
 import TweetDataset
 import tweetpost
@@ -45,6 +47,7 @@ def learning(model, dataset):
     text = dataset["alltweet"]
     filepath = "model_log/" + "weights.{epoch:02d}-{loss:.4f}.hdf5"
     cb = [EarlyStopping(monitor="loss"), ModelCheckpoint(filepath=filepath, verbose=1, monitor="loss", save_best_only=True)]
+    # cb = [EarlyStopping(monitor="loss"), ModelCheckpoint(filepath=filepath, verbose=1, monitor="loss", save_best_only=True), TensorBoard(log_dir="gs://BUCKET/mecaota-tweet20170901", histogram_freq=1)]
     chars = dataset["chars"]
     char_indices = dataset["char_indices"]
     indices_char = dataset["indices_chars"]
