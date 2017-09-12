@@ -12,6 +12,9 @@ from keras.models import Sequential, load_model
 from keras.callbacks import ModelCheckpoint, EarlyStopping
 
 import TweetDataset
+import tweetpost
+
+twitter = None
 
 def create_model(X, Y):
     print("model create task processing,,,")
@@ -45,6 +48,7 @@ def learning(model, dataset):
     chars = dataset["chars"]
     char_indices = dataset["char_indices"]
     indices_char = dataset["indices_chars"]
+    posttext = ""
 
     for iteration in range(1, 60):
         print()
@@ -58,7 +62,7 @@ def learning(model, dataset):
             print('----- diversity:', diversity)
 
             generated = ''
-            tweet_strlen = random.randint(1, 140)
+            tweet_strlen = random.randint(1, 80)
             sentence = text[start_index: start_index + maxlen]
             generated += str(sentence)
             print('----- Generating with seed: "' + str(sentence) + '"')
@@ -76,9 +80,12 @@ def learning(model, dataset):
                 generated += next_char
                 sentence = sentence[1:] + next_char
 
+                posttext = generated
                 sys.stdout.write(next_char)
                 sys.stdout.flush()
             print()
+    debugtext = "\n" + "" + "\n"
+    print(tweetpost.postTweet(twitter, posttext + debugtext))
     return model
 
 def save_model_dataset(model, dataset, filename):
@@ -127,6 +134,7 @@ def select_file(systemcall):
     return filename
 
 if __name__ == "__main__":
+    twitter = tweetpost.initTwitter()
     model, dataset = open_model_dataset(sys.argv)
     model = learning(model, dataset)
     save_model_dataset(model, dataset, select_file(sys.argv))
