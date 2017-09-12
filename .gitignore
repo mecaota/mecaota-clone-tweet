@@ -2,7 +2,6 @@
 *.DS_Store
 .vscode
 __pycache__/
-model_log
 _*
 *.h5
 *.hdf5
