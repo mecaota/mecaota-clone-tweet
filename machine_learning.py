@@ -5,11 +5,13 @@ import random
 import json
 import pandas
 
-from keras.layers import Dense, Activation
-from keras.layers.core import Dropout
-from keras.layers.recurrent import LSTM
-from keras.models import Sequential, load_model
-from keras.callbacks import ModelCheckpoint, EarlyStopping
+import tensorflow as tf
+from tensorflow.contrib.keras.python import keras
+from tensorflow.contrib.keras.python.keras.layers import Dense, Activation
+from tensorflow.contrib.keras.python.keras.layers.core import Dropout
+from tensorflow.contrib.keras.python.keras.layers.recurrent import LSTM
+from tensorflow.contrib.keras.python.keras.models import Sequential, load_model
+from tensorflow.contrib.keras.python.keras.callbacks import ModelCheckpoint, EarlyStopping
 
 import TweetDataset
 import tweetpost
